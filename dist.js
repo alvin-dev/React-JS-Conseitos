@@ -1,11 +1,12 @@
 const NomeContext = React.createContext('nome');
 
-function MeuComponente1() {
+function MeuComponente1(props) {
   const myName = 'Alvaro Guedes';
   return /*#__PURE__*/React.createElement("div", {
     className: "componente-1"
   }, /*#__PURE__*/React.createElement(MeuComponente2, null, /*#__PURE__*/React.createElement(MeuComponente4, {
-    nome: myName
+    nome: myName,
+    onClickIncrementar: props.onClickIncrementar
   })));
 }
 
@@ -25,24 +26,50 @@ function MeuComponente4(props) {
   const [idade, setIdade] = React.useState(29);
   setTimeout(() => {
     setIdade(30);
-  }, 5000);
+  }, 2000);
   return /*#__PURE__*/React.createElement("div", {
     className: "componente-4"
-  }, /*#__PURE__*/React.createElement("p", null, "Componente 4 ", props.nome, " ", idade));
+  }, /*#__PURE__*/React.createElement("p", null, "Componente 4 ", props.nome, " ", idade), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: props.onClickIncrementar
+  }, "Incrementar"));
 }
 
-function MeuComponente() {
+function MeuComponente(props) {
   return /*#__PURE__*/React.createElement("div", {
     id: "componentes"
-  }, /*#__PURE__*/React.createElement(MeuComponente1, null));
+  }, /*#__PURE__*/React.createElement(MeuComponente1, {
+    onClickIncrementar: props.onClickIncrementar
+  }));
 }
 
-function MeuComponenteIrmao() {
-  return /*#__PURE__*/React.createElement("h1", null, "Meu Componente Irm\xE3o");
+function MeuComponenteIrmao(props) {
+  return /*#__PURE__*/React.createElement("div", {
+    id: "componente-irmao"
+  }, /*#__PURE__*/React.createElement(MeuComponenteIrmao2, {
+    contador: props.contador
+  }));
+}
+
+function MeuComponenteIrmao2(props) {
+  React.useEffect(function () {
+    localStorage.setItem('contador', props.contador);
+  });
+  return /*#__PURE__*/React.createElement("h2", null, "Contador: ", props.contador);
 }
 
 function AppComponente() {
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(MeuComponente, null), /*#__PURE__*/React.createElement(MeuComponenteIrmao, null));
+  const [contador, incrementaContador] = React.useState(parseInt(localStorage.getItem('contador'), 10) || 0);
+
+  const clickIncrementa = function () {
+    incrementaContador(contador + 10);
+  };
+
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(MeuComponente, {
+    onClickIncrementar: clickIncrementa
+  }), /*#__PURE__*/React.createElement(MeuComponenteIrmao, {
+    contador: contador
+  }));
 } // metodo para dizer qual componente vc quer injetar e aonde vc quer injetar!
 
 
